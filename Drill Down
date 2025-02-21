@@ -1,0 +1,80 @@
+---
+title: "Drill Down by Attribute"
+author: 
+- Kasper Kristensen
+date: "`r format(Sys.time(), '%d/%m/%Y')`"
+output:
+  html_document:
+    df_print: paged
+    #code_download: true
+    #number_sections: true
+    #toc: true
+    #toc_depth: 3
+    #toc_float: true
+    #toc_collapsed: true
+    theme: united
+    fig_width: 15
+    fig_height: 9
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+xfun::pkg_load2(c("htmltools", "mime"))
+library(readxl)
+library(dplyr)
+library(moments)
+library(seastests)
+library(fpp)
+library(lubridate)
+library(imputeTS)
+library(kableExtra)
+library(DT)
+```
+
+Imagine you are looking at data in IBP at Product Family level as below. 
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Drill Down/Product_Family.png")
+```
+
+If you then are interested in some more details on one of the Product Families, for example going down to Product Group Lvl5, this is easily done using the drill down function. To find the drill down function right click on any of the cell containing data marked in red below. 
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Drill Down/Curser Placement.png")
+```
+
+Then you can find the drill down and select by Attribute.
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Drill Down/Drill Down.png")
+```
+
+Then you select the Attribute you want to drill down on, in this example Product Group Lvl5.
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Drill Down/By_PG_Lvl5.png")
+```
+
+Now we have drilled down on the Product Family ADCS to Product Group Lvl5.
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Drill Down/Product_Group.png")
+```
+
+This process can then be repeated to get down to a more and more detailed view. We can for example drill down additionally to Profit Center level.
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Drill Down/By_PC.png")
+```
+
+Then we have further drilled down on the Product Group Lvl 5 BLSS0 by profit center.
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Drill Down/Profit_Center.png")
+```
+
+It is also easy to go back to either the previous view, i.e. back to only Product Group Lvl 5, or back to the initial view, i.e. the Product Families. This is also done inter the drill down function by selecting either Back or Initial View.
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Drill Down/Back.png")
+```
