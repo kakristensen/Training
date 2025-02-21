@@ -1,0 +1,60 @@
+---
+title: "Repeat Row Headers"
+author: 
+- Kasper Kristensen
+date: "`r format(Sys.time(), '%d/%m/%Y')`"
+output:
+  html_document:
+    df_print: paged
+    #code_download: true
+    #number_sections: true
+    #toc: true
+    #toc_depth: 3
+    #toc_float: true
+    #toc_collapsed: true
+    theme: united
+    fig_width: 15
+    fig_height: 9
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+xfun::pkg_load2(c("htmltools", "mime"))
+library(readxl)
+library(dplyr)
+library(moments)
+library(seastests)
+library(fpp)
+library(lubridate)
+library(imputeTS)
+library(kableExtra)
+library(DT)
+```
+
+Let us as an example say that you want to make an analysis, where you compare the Statistical Forecast and the Consensus Demand Plan to the Realized Sales. If you do the analysis at Profit Center and Product Group Lvl 5 it can look as below.  
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Repeat Row Headers/View_1.png")
+```
+
+By default the row headers are only printed once. Thus, when you scroll through the Excel-sheet you will not see anything printed in the Profit Center Description column as illustrated below. Maybe you want the Profit Center Description to be printed in each cell just by preference or because you forget which Profit Center you are currently looking at. Both are reasons why I always use the repeat row headers functionality.
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Repeat Row Headers/Blank View.png")
+```
+
+To find this first select Options under Settings.
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Repeat Row Headers/Options.png")
+```
+
+Then you find the functionality under the Display tab. After having placed the tick-mark in Repeat Row Headers you can either press OK or Set as Default, depending on whether you want the repeated row headers permanently or just this once.
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Repeat Row Headers/Repeat Row Headers.png")
+```
+
+Having placed the tick-mark every cell of the Profit Center Description column will now be populated with the Profit Center.
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Repeat Row Headers/View_Repeated_Headers.png")
+```
+
