@@ -1,0 +1,64 @@
+---
+title: "Adjust Number of Most Used Attributes/Key Figures"
+author: 
+- Kasper Kristensen
+date: "`r format(Sys.time(), '%d/%m/%Y')`"
+output:
+  html_document:
+    df_print: paged
+    #code_download: true
+    #number_sections: true
+    #toc: true
+    #toc_depth: 3
+    #toc_float: true
+    #toc_collapsed: true
+    theme: united
+    fig_width: 15
+    fig_height: 9
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+xfun::pkg_load2(c("htmltools", "mime"))
+library(readxl)
+library(dplyr)
+library(moments)
+library(seastests)
+library(fpp)
+library(lubridate)
+library(imputeTS)
+library(kableExtra)
+library(DT)
+```
+
+In IBP we have a lot of key figures. In the case below 203 are so called strong matches, but then there are also more than 300 key figures in the Other category. 
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Adjust Number of Most Used Attributes_Key Figures/Number of keyfigures.png")
+```
+
+The key figures you need are quite easily searchable in the search bar. However, if you are mostly using the same key figures over and over again, they are easier found in the Most Used category at the top. For me this category shows only the five most used key figures. I do, however, believe that many of you are using much more than five key figures on a regular basis. This setting can be adjusted to have more than five key figures.
+
+
+First you should go to settings and select User Settings:
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Adjust Number of Most Used Attributes_Key Figures/User settings.png")
+```
+
+In the User Settings under Display Settings you can type in the number of key figures you would like to be shown as Most Used.
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Adjust Number of Most Used Attributes_Key Figures/Adjust number of keyfigures.png")
+```
+
+Having done this you are now able to find more key figures under Most Used at the top of your selection.
+
+```{r,echo=FALSE, out.width = "800px"}
+knitr::include_graphics("C:/Users/108468/OneDrive - Grundfos/Desktop/IBP Training/Tips & Tricks/Adjust Number of Most Used Attributes_Key Figures/New Number of keyfigures.png")
+```
+
+
+
+
+
