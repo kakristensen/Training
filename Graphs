@@ -1,0 +1,143 @@
+### This file is to create and plot graphs that will be helpfull visual aids in statistical forecast training ###
+library(fpp)
+library(fpp2)
+library(ggplot2)
+library(forecast)
+library(dplyr)
+install.packages("tsfeatures")
+library(tsfeatures)
+#max_level_shift(goog200) #level shift
+
+# Set training data from 1992 to 2007
+beer2 <- window(ausbeer,start=1992,end=c(2007,4))
+# Plot some forecasts
+autoplot(beer2) +
+  autolayer(meanf(beer2, h=11),
+            series="Mean", PI=FALSE) +
+  autolayer(naive(beer2, h=11),
+            series="Naïve", PI=FALSE) +
+  autolayer(snaive(beer2, h=11),
+            series="Seasonal naïve", PI=FALSE) +
+  ggtitle("Forecasts for quarterly beer production") +
+  xlab("Year") + ylab("Megalitres") +
+  guides(colour=guide_legend(title="Forecast"))
+
+plot(beer2,type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+fcast.beer=forecast(ausbeer, h=8)
+plot(c(beer2,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Forecasts for quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(fcast.beer)[,1]),type="l",col="blue")
+legend("topright", legend=c("Historical Data", "Forecast"),lty = c(1,1),cex=1.5, col = c("black","blue"),  
+       text.col = c("black","blue") 
+)
+
+#seasonplot? just for fun
+
+autoplot(goog200) +
+  autolayer(meanf(goog200, h=40),
+            series="Mean", PI=FALSE) +
+  autolayer(rwf(goog200, h=40),
+            series="Naïve", PI=FALSE) +
+  autolayer(rwf(goog200, drift=TRUE, h=40),
+            series="Drift", PI=FALSE) +
+  ggtitle("Google stock (daily ending 6 Dec 2013)") +
+  xlab("Day") + ylab("Closing Price (US$)") +
+  guides(colour=guide_legend(title="Forecast"))
+
+max_level_shift(goog200)
+
+fcast.goog=forecast(goog200, h=8)
+plot(c(goog200,rep(NA,8)),type="l",xlab = "Day", ylab="Closing Price (US$)",main="Google stock (daily ending 6 Dec 2013)",ylim = c(350,600))
+points(c(rep(NA,length(goog200)),as.data.frame(fcast.goog)[,1]),type="l",col="blue")
+
+#### Decomposition ####
+beer.decomp <- decompose(beer2)
+plot(beer.decomp)
+goog.decomp <- decompose(ts(goog200,frequency = 2))#gives error without the frequency=2 because there is no season. This is just to illustrate a point
+plot(goog.decomp)
+
+#### Naive ####
+naive.goog=naive(goog200, h=16)
+naive.beer=naive(beer2, h=8)
+par(mfrow = c(2, 1))
+plot(c(beer2,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(naive.beer)[,1]),type="l",col="blue")
+plot(c(goog200,rep(NA,16)),type="l",xlab = "Day", ylab="Closing Price (US$)",main="Google stock (daily ending 6 Dec 2013)",ylim = c(350,600))
+points(c(rep(NA,length(goog200)),as.data.frame(naive.goog)[,1]),type="l",col="blue")
+
+#### Seasonal Naive ####
+snaive.goog=snaive(goog200, h=16)
+snaive.beer=snaive(beer2, h=8)
+par(mfrow = c(2, 1))
+plot(c(beer2,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(snaive.beer)[,1]),type="l",col="blue")
+plot(c(goog200,rep(NA,16)),type="l",xlab = "Day", ylab="Closing Price (US$)",main="Google stock (daily ending 6 Dec 2013)",ylim = c(350,600))
+points(c(rep(NA,length(goog200)),as.data.frame(snaive.goog)[,1]),type="l",col="blue")
+
+#### Average ####
+avg.goog=meanf(goog200, h=16)
+avg.beer=meanf(beer2, h=8)
+par(mfrow = c(2, 1))
+plot(c(beer2,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(avg.beer)[,1]),type="l",col="blue")
+plot(c(goog200,rep(NA,16)),type="l",xlab = "Day", ylab="Closing Price (US$)",main="Google stock (daily ending 6 Dec 2013)",ylim = c(350,600))
+points(c(rep(NA,length(goog200)),as.data.frame(avg.goog)[,1]),type="l",col="blue")
+
+#### ARIMA ####
+
+elecequip %>% stl(s.window='periodic') %>% seasadj() -> eeadj
+plot(eeadj,ylab="Orders",main="Seasonally Adjusted Electrical Equipment Orders")
+
+ARIMA.beer=auto.arima(beer2,seasonal = FALSE)
+plot(c(beer2,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(forecast(ARIMA.beer,h=8))[,1]),type="l",col="blue")
+#ARIMA.goog=auto.arima(goog200,seasonal = FALSE)
+#plot(c(goog200,rep(NA,16)),type="l",xlab = "Day", ylab="Closing Price (US$)",main="Google stock (daily ending 6 Dec 2013)",ylim = c(350,600))
+#points(c(rep(NA,length(goog200)),as.data.frame(forecast(ARIMA.goog,h=16))[,1]),type="l",col="blue")
+
+SARIMA.beer=auto.arima(beer2,seasonal = TRUE)
+plot(c(beer2,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(forecast(SARIMA.beer,h=8))[,1]),type="l",col="blue")
+
+#### Exponential Smoothing ####
+S.exp.beer=HoltWinters(beer2, gamma = FALSE, beta = FALSE)
+D.exp.beer=HoltWinters(beer2, gamma = FALSE)
+T.exp.beer=HoltWinters(beer2) 
+
+S.exp.goog=HoltWinters(goog200, gamma = FALSE, beta = FALSE)
+D.exp.goog=HoltWinters(goog200, gamma = FALSE)
+T.exp.goog=HoltWinters(goog200) 
+## Single ##
+plot(c(beer2,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(predict(S.exp.beer, 8))[,1]),type="l",col="blue")
+plot(c(goog200,rep(NA,16)),type="l",xlab = "Day", ylab="Closing Price (US$)",main="Google stock (daily ending 6 Dec 2013)",ylim = c(350,600))
+points(c(rep(NA,length(goog200)),as.data.frame(predict(S.exp.goog,16))[,1]),type="l",col="blue")
+
+## Double ##
+plot(c(beer2,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(predict(D.exp.beer, 8))[,1]),type="l",col="blue")
+plot(c(goog200,rep(NA,16)),type="l",xlab = "Day", ylab="Closing Price (US$)",main="Google stock (daily ending 6 Dec 2013)",ylim = c(350,600))
+points(c(rep(NA,length(goog200)),as.data.frame(predict(D.exp.goog,16))[,1]),type="l",col="blue")
+
+## Triple ##
+plot(c(beer2,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(predict(T.exp.beer, 8))[,1]),type="l",col="blue")
+
+#### Dynamic Forecast ####
+beer.w0 <- window(ausbeer,start=1992,end=c(2007,1))
+ARIMA.beer.w0=auto.arima(beer.w0,seasonal = FALSE)
+beer.w1 <- window(ausbeer,start=1992,end=c(2007,2))
+ARIMA.beer.w1=auto.arima(beer.w1,seasonal = FALSE)
+beer.w2 <- window(ausbeer,start=1992,end=c(2007,3))
+ARIMA.beer.w2=auto.arima(beer.w2,seasonal = FALSE)
+#par(mfrow=c(4,1))
+plot(c(beer.w0,rep(NA,8)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer.w0)),as.data.frame(forecast(ARIMA.beer.w0,h=8))[,1]),type="l",col="blue")
+plot(c(beer.w1,rep(NA,7)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer.w1)),as.data.frame(forecast(ARIMA.beer.w1,h=7))[,1]),type="l",col="green")
+points(c(rep(NA,length(beer.w0)),as.data.frame(forecast(ARIMA.beer.w0,h=8))[,1]),type="l",col="blue")
+plot(c(beer.w2,rep(NA,6)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer.w1)),as.data.frame(forecast(ARIMA.beer.w1,h=7))[,1]),type="l",col="green")
+points(c(rep(NA,length(beer.w0)),as.data.frame(forecast(ARIMA.beer.w0,h=8))[,1]),type="l",col="blue")
+points(c(rep(NA,length(beer.w2)),as.data.frame(forecast(ARIMA.beer.w2,h=6))[,1]),type="l",col="red")
+plot(c(beer2,rep(NA,5)),type="l",xlab = "Year", ylab="Megalitres",main="Quarterly beer production")
+points(c(rep(NA,length(beer2)),as.data.frame(forecast(ARIMA.beer,h=5))[,1]),type="l",col="blue")
